@@ -1,0 +1,37 @@
+# Here mostly for reference reasons.
+
+# PROOF OF CONCEPT
+"""
+GenesisText = hashlib.blake2b(
+    b'20191231 - https://www.linuxtoday.com/security/prime-numbers-encryption-and-the-linux-factor-command-191230083044.html - Prime Numbers, Encryption and the Linux Factor Command').hexdigest()
+GenesisTime = "1577793600"
+# create a hash of nothing
+genesis_zero_hash = GenesisText = hashlib.blake2b(b'').hexdigest()
+# use hash of nothing for nonce and transactions
+block_hash_string = GenesisText + GenesisTime + genesis_zero_hash + genesis_zero_hash
+genesis_hash = hashlib.blake2b(block_hash_string.encode("utf-8")).hexdigest()
+
+GenesisHeader = BlockHeader(GenesisText, genesis_hash, GenesisTime, GenesisTime)
+GenesisBlock = Block(GenesisHeader, BlockPayload([]))
+
+from_acct = hashlib.blake2b(b'tim').hexdigest()
+to_acct = hashlib.blake2b(b'mit').hexdigest()
+
+fake_transactions = []
+fake_transactions.append(Transaction(from_acct, to_acct, 5, 1))
+fake_transactions.append(Transaction(to_acct, from_acct, 1, 1))
+fake_transactions.append(Transaction(from_acct, to_acct, 2, 1))
+
+miner = BlockMiner(GenesisBlock, fake_transactions, 2)
+result = miner.run_miner(-1)
+if result:
+    print(result)
+    block_gen = BlockMaker(GenesisBlock, fake_transactions, ProofOfWork(result[0], 2, result[1]))
+    new_block = block_gen.block
+    print("GENESIS TEXT HASH :\t\t\t\t" + GenesisText)
+    print("GENESIS BLOCK HASH:\t\t\t\t" + genesis_hash)
+    print("GENERATED BLOCK PARENT HASH: \t" + new_block.header.parent_hash)
+    print("GENERATED BLOCK HASH:\t\t\t" + new_block.header.block_hash)
+    print("BLOCK STRING: " + str(new_block.payload.transactions[0]))
+    print(get_current_time())
+"""
